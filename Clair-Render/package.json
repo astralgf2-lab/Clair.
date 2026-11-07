@@ -1,0 +1,13 @@
+{
+  "name": "clair-render",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "start": "node start.mjs",
+    "build": "node check-public.mjs && node --check start.mjs && node --check server/auth.mjs && node --check server/server.mjs",
+    "test": "node --test test/*.test.mjs"
+  }
+}
