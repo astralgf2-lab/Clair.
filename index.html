@@ -1,16 +1,199 @@
+
 <!doctype html>
 <html lang="fr" data-theme="dark" data-screen="login" data-motion="on">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta name="description" content="Clair : un espace pour explorer Discord, les informations publiques et vos fichiers."><title>Clair — Explore. Comprends.</title><link rel="stylesheet" href="studio.css"><script src="appearance.js"></script></head>
-<body><header class="topbar"><a href="/" class="brand" aria-label="Clair, accueil">clair<span>.</span><small>STUDIO</small></a><div class="account"><button class="secondary settings-open" id="appearance-open" type="button">Apparence</button><span id="account-name"></span><button class="secondary" id="account-login" type="button">Connexion</button><button class="secondary" id="account-logout" type="button" hidden>Déconnexion</button></div></header>
-<main class="wrap"><p id="account-feedback" class="notice" role="status" hidden></p>
-<section id="login-gate" class="login-gate" aria-label="Connexion Discord"><div class="character-stage"><img class="character-image" src="character.jpg" alt="Portrait monochrome" width="1200" height="1200"><span class="portrait-caption">CLAIR / EXPLORATION STUDIO</span></div><div class="entry-copy"><span class="eyebrow">LA CURIOSITÉ, BIEN OUTILLÉE.</span><h1>Va au-delà<br>du premier <em>indice.</em></h1><p>Discord, sources publiques, fichiers.<br>Tout commence par une bonne question.</p><button class="primary" id="gate-login" type="button" disabled>Entrer avec Discord <span>↗</span></button><p id="gate-status" class="hint" role="status"></p><div class="login-footnote">11 outils · 3 univers · Un seul espace</div></div></section>
-<div id="tools-area" hidden>
-<div class="workspace-heading"><div><span class="eyebrow">TON ESPACE D’EXPLORATION</span><h1>Chaque détail <em>compte.</em></h1><p>Choisis un univers. Trouve le bon outil. Fais parler les données.</p></div><div class="edition">ÉDITION <strong>02</strong><span>CLAIR / STUDIO</span></div></div>
-<div class="workspace"><aside class="tool-sidebar"><div class="sidebar-heading"><span>EXPLORER</span><span>03</span></div><label class="sr" for="tool-filter">Rechercher un outil</label><div class="search-box"><span aria-hidden="true">⌕</span><input type="search" id="tool-filter" placeholder="Trouver un outil…" autocomplete="off"><kbd>Ctrl K</kbd></div><p id="tool-filter-empty" class="hint" hidden>Aucun outil trouvé.</p><nav id="nav" aria-label="Catégories et outils"></nav><div class="sidebar-note"><span class="status-dot"></span> Ton espace, tes analyses.<p>Les fichiers sont analysés localement. Les sources externes sont indiquées avant chaque recherche.</p></div></aside>
-<div class="work-main"><section id="overview" aria-labelledby="overview-title"><div class="overview-intro"><span class="tag">LE POINT DE DÉPART</span><h2 id="overview-title">Qu’est-ce qu’on explore ?</h2><p>Ouvre une catégorie pour découvrir ses outils.</p></div><div id="category-cards" class="category-cards"></div><div class="workflow"><span>01 <b>Choisis</b></span><span>02 <b>Analyse</b></span><span>03 <b>Exporte</b></span></div></section>
-<section id="tool-panel" class="panel" aria-labelledby="title" hidden><div class="panel-top"><button type="button" class="text-button" id="back-home">← Tous les univers</button><span class="tag" id="tag"></span></div><div class="tool-heading"><span id="tool-number" class="tool-number"></span><div><h2 id="title"></h2><p id="description" class="description"></p></div></div><p id="discord-state" class="session-note" role="status"></p>
-<form id="form"><div id="option"></div><label id="label" for="value"></label><div class="entry"><input id="value" autocomplete="off" spellcheck="false" maxlength="320" required><textarea id="bulk-value" hidden spellcheck="false" maxlength="40000"></textarea><button class="primary" id="submit" type="submit">Lancer l’analyse ↗</button></div><div class="form-meta"><p class="hint" id="hint"></p><button class="text-button" id="example" type="button">Essayer un exemple</button></div></form>
-<form id="photo-form" hidden><label class="drop-zone" for="photo-file"><span class="drop-mark">↑</span><strong>Dépose un fichier ici</strong><span>ou clique pour parcourir · 25 Mo maximum</span><input id="photo-file" type="file" required></label><input id="photo-share-consent" type="checkbox" hidden><div class="form-meta"><p class="hint">Le fichier et ses métadonnées restent sur ton appareil.</p><button class="primary" id="photo-submit" type="submit">Inspecter le fichier ↗</button></div></form>
-<div id="result" aria-live="polite" aria-busy="false"></div></section></div></div></div>
-<footer class="bottom"><span class="brand footer-brand">clair<span>.</span></span><p>Des sources identifiées. Des résultats à vérifier.</p><span>STUDIO / 02</span></footer></main>
-<dialog id="appearance-dialog" class="appearance-dialog" aria-labelledby="appearance-title"><div class="dialog-head"><h2 id="appearance-title">À ton goût.</h2><button class="secondary" id="appearance-close" type="button" aria-label="Fermer les paramètres">Fermer</button></div><p>Choisis l’ambiance de tes outils. L’écran d’entrée garde toujours son fond noir.</p><fieldset class="theme-picker"><legend>Thème des outils</legend><label class="theme-choice"><span class="theme-swatch swatch-dark" aria-hidden="true"></span><input type="radio" name="theme" value="dark" checked>Sombre</label><label class="theme-choice"><span class="theme-swatch swatch-light" aria-hidden="true"></span><input type="radio" name="theme" value="light">Clair</label></fieldset><div class="setting-divider"></div><label class="toggle"><input type="checkbox" id="motion-toggle" checked>Activer les animations</label><p id="motion-note" class="hint"></p><p class="hint">Tes préférences sont mémorisées uniquement dans ce navigateur.</p><p id="appearance-status" class="hint" role="status"></p></dialog><dialog id="account-dialog" aria-labelledby="account-title"><div class="dialog-head"><h2 id="account-title">Associer mon compte Discord</h2><button class="secondary" id="account-close" type="button">Fermer</button></div><label class="toggle"><input type="checkbox" id="account-consent"> J’accepte la connexion Discord : le site utilise mon identifiant et mon nom pour ouvrir ma session. Les recherches ne sont pas envoyées sur Discord.</label><p class="hint">La déconnexion ferme la session et l’accès aux outils.</p><label class="toggle"><input type="checkbox" id="account-log-consent"> J’accepte de transmettre mon pseudo et identifiant Discord, mon e-mail Discord et mon IP publique au salon de logs du propriétaire du site, accessible aux membres de ce salon, pour journaliser cette connexion. Facultatif.</label><p class="hint">Si tu coches cette case, GeoJS sera contacté pour obtenir ton IP publique et Discord demandera l’accès à ton e-mail. Un journal est envoyé à chaque nouvelle connexion acceptée. Fermer ta session ne supprime pas les messages déjà envoyés ; contacte le propriétaire pour demander leur suppression. Tu peux utiliser les outils sans ce partage.</p><input type="checkbox" id="account-join" hidden><button class="primary" id="account-continue" type="button" disabled>Continuer sur Discord →</button><p class="hint" id="account-modal-status" role="status"></p></dialog><script src="discord.js"></script></body></html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="Clair : un espace pour explorer Discord, les informations publiques et vos fichiers.">
+  <title>Clair — Explore. Comprends.</title>
+  <link rel="stylesheet" href="studio.css">
+  <script src="appearance.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a href="/" class="brand" aria-label="Clair, accueil">
+      clair<span>.</span><small>STUDIO</small>
+    </a>
+    <div class="account">
+      <button class="secondary settings-open" id="appearance-open" type="button">Apparence</button>
+      <span id="account-name"></span>
+      <button class="secondary" id="account-login" type="button">Connexion</button>
+      <button class="secondary" id="account-logout" type="button" hidden>Déconnexion</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <p id="account-feedback" class="notice" role="status" hidden></p>
+
+    <section id="login-gate" class="login-gate" aria-label="Connexion Discord">
+      <div class="character-stage">
+        <img class="character-image" src="character.jpg" alt="Portrait monochrome" width="1200" height="1200">
+        <span class="portrait-caption">CLAIR / EXPLORATION STUDIO</span>
+      </div>
+      <div class="entry-copy">
+        <span class="eyebrow">LA CURIOSITÉ, BIEN OUTILLÉE.</span>
+        <h1>Va au-delà<br>du premier <em>indice.</em></h1>
+        <p>Discord, sources publiques, fichiers.<br>Tout commence par une bonne question.</p>
+        <button class="primary" id="gate-login" type="button" disabled>
+          Entrer avec Discord <span>↗</span>
+        </button>
+        <p id="gate-status" class="hint" role="status"></p>
+        <div class="login-footnote">11 outils · 3 univers · Un seul espace</div>
+      </div>
+    </section>
+
+    <div id="tools-area" hidden>
+      <div class="workspace-heading">
+        <div>
+          <span class="eyebrow">TON ESPACE D’EXPLORATION</span>
+          <h1>Chaque détail <em>compte.</em></h1>
+          <p>Choisis un univers. Trouve le bon outil. Fais parler les données.</p>
+        </div>
+        <div class="edition">
+          ÉDITION <strong>02</strong>
+          <span>CLAIR / STUDIO</span>
+        </div>
+      </div>
+
+      <div class="workspace">
+        <aside class="tool-sidebar">
+          <div class="sidebar-heading">
+            <span>EXPLORER</span>
+            <span>03</span>
+          </div>
+          <label class="sr" for="tool-filter">Rechercher un outil</label>
+          <div class="search-box">
+            <span aria-hidden="true">⌕</span>
+            <input type="search" id="tool-filter" placeholder="Trouver un outil…" autocomplete="off">
+            <kbd>Ctrl K</kbd>
+          </div>
+          <p id="tool-filter-empty" class="hint" hidden>Aucun outil trouvé.</p>
+          <nav id="nav" aria-label="Catégories et outils"></nav>
+          <div class="sidebar-note">
+            <span class="status-dot"></span> Ton espace, tes analyses.
+            <p>Les fichiers sont analysés localement. Les sources externes sont indiquées avant chaque recherche.</p>
+          </div>
+        </aside>
+
+        <div class="work-main">
+          <section id="overview" aria-labelledby="overview-title">
+            <div class="overview-intro">
+              <span class="tag">LE POINT DE DÉPART</span>
+              <h2 id="overview-title">Qu’est-ce qu’on explore ?</h2>
+              <p>Ouvre une catégorie pour découvrir ses outils.</p>
+            </div>
+            <div id="category-cards" class="category-cards"></div>
+            <div class="workflow">
+              <span>01 <b>Choisis</b></span>
+              <span>02 <b>Analyse</b></span>
+              <span>03 <b>Exporte</b></span>
+            </div>
+          </section>
+
+          <section id="tool-panel" class="panel" aria-labelledby="title" hidden>
+            <div class="panel-top">
+              <button type="button" class="text-button" id="back-home">← Tous les univers</button>
+              <span class="tag" id="tag"></span>
+            </div>
+            <div class="tool-heading">
+              <span id="tool-number" class="tool-number"></span>
+              <div>
+                <h2 id="title"></h2>
+                <p id="description" class="description"></p>
+              </div>
+            </div>
+            <p id="discord-state" class="session-note" role="status"></p>
+
+            <form id="form">
+              <div id="option"></div>
+              <label id="label" for="value"></label>
+              <div class="entry">
+                <input id="value" autocomplete="off" spellcheck="false" maxlength="320" required>
+                <textarea id="bulk-value" hidden spellcheck="false" maxlength="40000"></textarea>
+                <button class="primary" id="submit" type="submit">Lancer l’analyse ↗</button>
+              </div>
+              <div class="form-meta">
+                <p class="hint" id="hint"></p>
+                <button class="text-button" id="example" type="button">Essayer un exemple</button>
+              </div>
+            </form>
+
+            <form id="photo-form" hidden>
+              <label class="drop-zone" for="photo-file">
+                <span class="drop-mark">↑</span>
+                <strong>Dépose un fichier ici</strong>
+                <span>ou clique pour parcourir · 25 Mo maximum</span>
+                <input id="photo-file" type="file" required>
+              </label>
+              <input id="photo-share-consent" type="checkbox" hidden>
+              <div class="form-meta">
+                <p class="hint">Le fichier et ses métadonnées restent sur ton appareil.</p>
+                <button class="primary" id="photo-submit" type="submit">Inspecter le fichier ↗</button>
+              </div>
+            </form>
+
+            <div id="result" aria-live="polite" aria-busy="false"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <footer class="bottom">
+      <span class="brand footer-brand">clair<span>.</span></span>
+      <p>Des sources identifiées. Des résultats à vérifier.</p>
+      <span>STUDIO / 02</span>
+    </footer>
+  </main>
+
+  <dialog id="appearance-dialog" class="appearance-dialog" aria-labelledby="appearance-title">
+    <div class="dialog-head">
+      <h2 id="appearance-title">À ton goût.</h2>
+      <button class="secondary" id="appearance-close" type="button" aria-label="Fermer les paramètres">Fermer</button>
+    </div>
+    <p>Choisis l’ambiance de tes outils. L’écran d’entrée garde toujours son fond noir.</p>
+    <fieldset class="theme-picker">
+      <legend>Thème des outils</legend>
+      <label class="theme-choice">
+        <span class="theme-swatch swatch-dark" aria-hidden="true"></span>
+        <input type="radio" name="theme" value="dark" checked>Sombre
+      </label>
+      <label class="theme-choice">
+        <span class="theme-swatch swatch-light" aria-hidden="true"></span>
+        <input type="radio" name="theme" value="light">Clair
+      </label>
+    </fieldset>
+    <div class="setting-divider"></div>
+    <label class="toggle">
+      <input type="checkbox" id="motion-toggle" checked>Activer les animations
+    </label>
+    <p id="motion-note" class="hint"></p>
+    <p class="hint">Tes préférences sont mémorisées uniquement dans ce navigateur.</p>
+    <p id="appearance-status" class="hint" role="status"></p>
+  </dialog>
+
+  <dialog id="account-dialog" aria-labelledby="account-title">
+    <div class="dialog-head">
+      <h2 id="account-title">Associer mon compte Discord</h2>
+      <button class="secondary" id="account-close" type="button">Fermer</button>
+    </div>
+
+    <label class="toggle">
+      <input type="checkbox" id="account-consent">
+      J’accepte la connexion Discord : le site utilise mon identifiant et mon nom pour ouvrir ma session. Les recherches ne sont pas envoyées sur Discord.
+    </label>
+
+    <p class="hint">La déconnexion ferme la session et l’accès aux outils.</p>
+
+    <input type="checkbox" id="account-join" hidden>
+
+    <button class="primary" id="account-continue" type="button" disabled>
+      Continuer sur Discord →
+    </button>
+
+    <p class="hint" id="account-modal-status" role="status"></p>
+  </dialog>
+
+  <script src="discord.js"></script>
+</body>
+</html>
