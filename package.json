@@ -1,0 +1,13 @@
+{
+  "name": "clair-render",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "start": "node start.mjs",
+    "build": "node check-public.mjs && node --check start.mjs && node --check server/auth.mjs && node --check server/server.mjs && node --check server/lookups.mjs && node --check server/app.js && node --check server/tool-core.js && node --check server/discord.js && node --check server/photo-worker.js",
+    "test": "node --test test/*.test.mjs"
+  }
+}
