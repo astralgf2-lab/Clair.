@@ -1,0 +1,20 @@
+import {isIP} from 'node:net';
+import {domainToASCII} from 'node:url';
+const fail=(message,status=400)=>Object.assign(Error(message),{status});
+export function domainName(value){
+ let host=String(value||'').trim().toLowerCase();
+ if(host.includes('://')){try{host=new URL(host).hostname}catch{throw fail('Nom de domaine invalide.')}}
+ host=domainToASCII(host.replace(/\.$/,''));
+ if(host.length>253||!/^([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/i.test(host))throw fail('Saisis un domaine public valide, par exemple example.com.');
+ return host;
+}
+export function inviteCode(value){let code=String(value||'').trim();if(code.includes('/')){let u;try{u=new URL(code.includes('://')?code:'https://'+code)}catch{throw fail('Invitation invalide.')}if(u.protocol!=='https:'||!['discord.gg','discord.com','www.discord.com','www.discord.gg'].includes(u.hostname))throw fail('Utilise un lien discord.gg ou discord.com/invite.');code=u.hostname.endsWith('discord.gg')?u.pathname.slice(1):u.pathname.replace(/^\/invite\//,'');}if(!/^[a-zA-Z0-9_-]{2,100}$/.test(code))throw fail('Code d’invitation invalide.');return code;}
+export async function publicLookup(kind,value,request=fetch){
+ async function json(url){let r;try{r=await request(url,{signal:AbortSignal.timeout(10000),redirect:'error',headers:{Accept:'application/json'}})}catch{throw fail('La source ne répond pas. Réessaie dans quelques instants.',502)}if(!r.ok)throw fail(r.status===429?'Quota de la source atteint. Réessaie plus tard.':r.status===404?'Aucun résultat : invitation expirée ou donnée introuvable.':'La source est indisponible.',r.status===429?429:502);return r.json()}
+ async function dns(host,type){try{const data=await json('https://dns.google/resolve?name='+encodeURIComponent(host)+'&type='+type+'&edns_client_subnet=0.0.0.0/0');return {type,status:data.Status,authenticated:data.AD===true,records:(data.Answer||[]).map(r=>({name:r.name,type:r.type,value:r.data,ttl:r.TTL})),error:data.Status===3?'Domaine inexistant':data.Status!==0?'Échec de résolution':null}}catch(e){return {type,records:[],error:e.message}}}
+ if(kind==='domain'){const host=domainName(value);const records=await Promise.all(['A','AAAA','MX','NS','TXT','CAA','SOA'].map(t=>dns(host,t)));return {host,records,source:'Google Public DNS',at:new Date().toISOString()};}
+ if(kind==='email'){const email=String(value||'').trim();if(email.length>254||!(/^[^\s@]{1,64}@[^\s@]+$/.test(email)))throw fail('Adresse e-mail invalide.');const host=domainName(email.split('@')[1]);const [mx,txt,dmarc]=await Promise.all([dns(host,'MX'),dns(host,'TXT'),dns('_dmarc.'+host,'TXT')]);return {email,host,mx,spf:{...txt,records:txt.records.filter(r=>/^"?v=spf1(?:\s|"|$)/i.test(r.value))},dmarc:{...dmarc,records:dmarc.records.filter(r=>/^"?v=DMARC1(?:;|\s|"|$)/i.test(r.value))},source:'Google Public DNS',at:new Date().toISOString()};}
+ if(kind==='ip'){const address=String(value||'').trim();if(!isIP(address))throw fail('Adresse IPv4 ou IPv6 invalide.');const d=await json('https://get.geojs.io/v1/ip/geo/'+encodeURIComponent(address)+'.json');if(!d.country)throw fail('Aucune donnée pour cette IP. Utilise une adresse publique.',404);return {ip:d.ip,country:d.country,countryCode:d.country_code,region:d.region,city:d.city,asn:d.asn,organization:d.organization,provider:d.organization_name,timezone:d.timezone,latitude:d.latitude,longitude:d.longitude,source:'GeoJS',at:new Date().toISOString()};}
+ if(kind==='invite'){const code=inviteCode(value);const d=await json('https://discord.com/api/v10/invites/'+encodeURIComponent(code)+'?with_counts=true&with_expiration=true');if(!d.guild)throw fail('Cette invitation ne décrit pas un serveur public.',404);return {code,name:d.guild.name,id:d.guild.id,description:d.guild.description,members:d.approximate_member_count,online:d.approximate_presence_count,level:d.guild.verification_level,features:d.guild.features||[],channel:d.channel?.name,expires:d.expires_at,source:'API publique Discord',at:new Date().toISOString()};}
+ throw fail('Analyse inconnue.',404);
+}
